@@ -32,23 +32,26 @@ app.post('/api/users/:_id/exercises', (req, res) => {
   const user = users.find(user => user._id === _id);
 
   if (!user) {
-    res.status(404).send('User not found');
-    return;
+    return res.status(404).send('User not found');
   }
 
   const newExercise = {
-    userId: _id,
     description,
     duration: parseInt(duration),
     date: date ? new Date(date).toDateString() : new Date().toDateString()
   };
-  exercises.push(newExercise);
 
+  // Add the exercise to the exercises array
+  exercises.push({ userId: _id, ...newExercise });
+
+  // Respond with the user object and the exercise fields added
   res.json({
+    _id: user._id,
     username: user.username,
     ...newExercise
   });
 });
+
 
 
 app.get('/api/users/:_id/logs', (req, res) => {
